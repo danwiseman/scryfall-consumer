@@ -10,17 +10,19 @@ import com.mongodb.client.result.InsertOneResult;
 import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.json.JSONObject;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.WakeupException;
-import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 public class ScryfallCardsConsumer {
@@ -33,6 +35,7 @@ public class ScryfallCardsConsumer {
         String bootstrapServers = "kafka1:9092";
         String groupId = "scryfall_cards_consumer";
         String topic = "scryfall_cards";
+        final int minBatchSize = 50;
 
         // create consumer configs
         Properties properties = new Properties();
@@ -41,6 +44,7 @@ public class ScryfallCardsConsumer {
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
 
@@ -62,18 +66,28 @@ public class ScryfallCardsConsumer {
         });
 
         try {
-            // sub to topic
+
             consumer.subscribe(Arrays.asList(topic));
+            List<ConsumerRecord<String, String>> buffer = new ArrayList<>();
 
             while(true) {
                 ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(100));
 
                 for (ConsumerRecord<String, String> record : records) {
                     log.info("Key" + record.key());
-                    ConsumeScryfallCard(record.key(), record.value());
-
+                    buffer.add(record);
                 }
+                if (buffer.size() >= minBatchSize) {
+                    for (ConsumerRecord<String, String> record : buffer) {
+                        ConsumeScryfallCard(record.key(), record.value());
+                    }
+                    consumer.commitSync();
+                    buffer.clear();
+                }
+
+
             }
+
         } catch (WakeupException e) {
             log.info("WakeupException");
         } catch (Exception e) {
@@ -91,11 +105,15 @@ public class ScryfallCardsConsumer {
         MongoCollection<Document> documents = database.getCollection("cards");
 
         try {
-            InsertOneResult insertResult = documents.insertOne(new Document().parse(value));
+            JSONObject cardJson = new JSONObject(value);
+            cardJson.put("_id", cardJson.getString("id"));
+            InsertOneResult insertResult = documents.insertOne(new Document().parse(cardJson.toString()));
             log.info("Inserted with id " + insertResult.getInsertedId());
         } catch (MongoException me) {
             log.error("MongoException " + me);
         }
+
+
     }
 
 }
