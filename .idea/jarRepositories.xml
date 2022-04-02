@@ -17,6 +17,11 @@
       <option name="url" value="https://repository.jboss.org/nexus/content/repositories/public/" />
     </remote-repository>
     <remote-repository>
+      <option name="id" value="talend" />
+      <option name="name" value="talend" />
+      <option name="url" value="https://artifacts-oss.talend.com/nexus/content/repositories/TalendOpenSourceRelease/" />
+    </remote-repository>
+    <remote-repository>
       <option name="id" value="confluent" />
       <option name="name" value="confluent" />
       <option name="url" value="http://packages.confluent.io/maven/" />
