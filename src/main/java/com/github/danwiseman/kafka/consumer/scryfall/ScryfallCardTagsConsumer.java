@@ -10,6 +10,9 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.InsertOneResult;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,36 +35,64 @@ public class ScryfallCardTagsConsumer {
   private static final Logger log = LoggerFactory.getLogger(
     ScryfallCardTagsConsumer.class
   );
-  static ConnectionString connectionString = new ConnectionString(
-    "mongodb://AzureDiamond:hunter2@docker:27017/"
-  );
-  static MongoClient mongoClient = MongoClients.create(connectionString);
+  private static ConnectionString connectionString;
+  private static MongoClient mongoClient;
 
   public static void main(String[] args) {
-    String bootstrapServers = "kafka1:9092";
-    String groupId = "scryfall_cards_tag_consumer";
-    String topic = "tagged-scryfall-cards";
-    final int minBatchSize = 5;
+    if (args.length == 0) {
+      System.out.println(
+        "Please input a properties file and mongo connection string"
+      );
+      System.exit(0);
+    }
+
+    Properties properties = new Properties();
+
+    try (InputStream input = new FileInputStream(args[0])) {
+      properties.load(input);
+    } catch (IOException ex) {
+      ex.printStackTrace();
+    }
+
+    connectionString =
+      new ConnectionString(properties.getProperty("mongo.connection"));
+    mongoClient = MongoClients.create(connectionString);
+
+    String topic = properties.getProperty("topic");
+    final int minBatchSize = Integer.parseInt(
+      properties.getProperty("min.batch.size")
+    );
 
     // create consumer configs
-    Properties properties = new Properties();
-    properties.setProperty(
+    Properties consumerConfigs = new Properties();
+    consumerConfigs.setProperty(
       ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-      bootstrapServers
+      properties.getProperty("bootstrap.servers")
     );
-    properties.setProperty(
+    consumerConfigs.setProperty(
       ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
       StringDeserializer.class.getName()
     );
-    properties.setProperty(
+    consumerConfigs.setProperty(
       ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
       StringDeserializer.class.getName()
     );
-    properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
-    properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-    properties.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+    consumerConfigs.setProperty(
+      ConsumerConfig.GROUP_ID_CONFIG,
+      properties.getProperty("group.id")
+    );
+    consumerConfigs.setProperty(
+      ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,
+      properties.getProperty("auto.offset.reset.config")
+    );
+    consumerConfigs.setProperty(
+      ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
+      "false"
+    );
 
-    KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
+    KafkaConsumer<String, String> consumer = new KafkaConsumer<>(
+      consumerConfigs
+    );
 
     final Thread mainThread = Thread.currentThread();
 
