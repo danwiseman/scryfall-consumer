@@ -1,10 +1,10 @@
 version: '3.4'
 services:
   cardsconsumer:
-    build:
-      context: .
-      target: cardsconsumer
-  cardtagsconsumer:
-    build:
-      context: .
-      target: cardtagsconsumer
+    image: "scryfall_cards_consumer"
+    environment:
+      - BOOTSTRAP_SERVERS_CONFIG=kafka1:9092
+  taggedcardsconsumer:
+    image: "scryfall_tagged_cards_consumer"
+    environment:
+      - BOOTSTRAP_SERVERS_CONFIG=kafka1:9092
