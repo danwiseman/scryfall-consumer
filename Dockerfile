@@ -1,22 +1,12 @@
-FROM openjdk:8-jdk-alpine as cardsconsumer
+FROM openjdk:8-alpine AS scryfall_cards_consumer
 
-WORKDIR /scryfall
-COPY config config
-
-VOLUME /scryfall/config
-
-ARG JAR_FILE=target/scryfall-cards-consumer-0.1.0-SNAPSHOT.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /scryfall/app.jar /scryfall/config/ScryfallCardConsumer.properties"]
+WORKDIR /app/
+COPY target/scryfall-cards-consumer-*.jar .
+ENTRYPOINT ["java", "-cp", "*", "com.github.danwiseman.kafka.consumer.scryfall.ScryfallCardsConsumer"]
 
 
-FROM openjdk:8-jdk-alpine as cardtagsconsumer
+FROM openjdk:8-alpine AS scryfall_tagged_cards_consumer
 
-WORKDIR /scryfall
-COPY config config
-
-VOLUME /scryfall/config
-
-ARG JAR_FILE=target/scryfall-cards-tags-consumer-0.1.0-SNAPSHOT.jar
-COPY ${JAR_FILE} app.jar
-ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -jar /scryfall/app.jar /scryfall/config/ScryfallCardTagsConsumer.properties"]
+WORKDIR /app/
+COPY target/scryfall-cards-tags-consumer-*.jar .
+ENTRYPOINT ["java", "-cp", "*", "com.github.danwiseman.kafka.consumer.scryfall.ScryfallCardTagsConsumer"]
