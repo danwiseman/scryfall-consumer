@@ -26,3 +26,12 @@ Currently, I use [NiFi](https://nifi.apache.org/) to push these JSONs into Kafka
 
 This would be a good thing to use with Kafka Streams to combine similar tag_type tags 
 into one JSON.
+
+# Docker
+
+To get the docker :whale: images to work, first build the jars and edit the config files in 
+the config folder. Then, run docker-compose.
+
+```shell
+ docker-compose -f docker-compose.yml build
+```
