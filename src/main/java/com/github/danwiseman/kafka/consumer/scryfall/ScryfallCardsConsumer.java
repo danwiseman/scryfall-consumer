@@ -1,5 +1,6 @@
 package com.github.danwiseman.kafka.consumer.scryfall;
 
+import com.github.danwiseman.kafka.consumer.scryfall.utils.EnvTools;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoException;
 import com.mongodb.client.MongoClient;
@@ -36,60 +37,33 @@ public class ScryfallCardsConsumer {
   private static MongoClient mongoClient;
 
   public static void main(String[] args) {
-    if (args.length == 0) {
-      System.out.println(
-        "Please input a properties file and mongo connection string"
-      );
-      System.exit(0);
-    }
+    Properties config = createProperties();
 
-    Properties properties = new Properties();
-
-    try (InputStream input = new FileInputStream(args[0])) {
-      properties.load(input);
-    } catch (IOException ex) {
-      ex.printStackTrace();
-    }
+    String topic = EnvTools.getEnvValue(EnvTools.TOPIC, "scryfall_cards");
+    Integer minBatchSize = Integer.parseInt(
+      EnvTools.getEnvValue(EnvTools.MIN_BATCH_SIZE, "15")
+    );
 
     connectionString =
-      new ConnectionString(properties.getProperty("mongo.connection"));
+      new ConnectionString(
+        EnvTools.getEnvValue(
+          EnvTools.MONGODB_CONNECTION_STRING,
+          "mongodb://AzureDiamond:hunter2@docker:27017/"
+        )
+      );
     mongoClient = MongoClients.create(connectionString);
 
-    String topic = properties.getProperty("topic");
-    final int minBatchSize = Integer.parseInt(
-      properties.getProperty("min.batch.size")
-    );
-
-    // create consumer configs
-    Properties consumerConfigs = new Properties();
-    consumerConfigs.setProperty(
-      ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG,
-      properties.getProperty("bootstrap.servers")
-    );
-    consumerConfigs.setProperty(
+    config.setProperty(
       ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG,
       StringDeserializer.class.getName()
     );
-    consumerConfigs.setProperty(
+    config.setProperty(
       ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG,
       StringDeserializer.class.getName()
     );
-    consumerConfigs.setProperty(
-      ConsumerConfig.GROUP_ID_CONFIG,
-      properties.getProperty("group.id")
-    );
-    consumerConfigs.setProperty(
-      ConsumerConfig.AUTO_OFFSET_RESET_CONFIG,
-      properties.getProperty("auto.offset.reset.config")
-    );
-    consumerConfigs.setProperty(
-      ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG,
-      "false"
-    );
+    config.setProperty(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
 
-    KafkaConsumer<String, String> consumer = new KafkaConsumer<>(
-      consumerConfigs
-    );
+    KafkaConsumer<String, String> consumer = new KafkaConsumer<>(config);
 
     final Thread mainThread = Thread.currentThread();
 
@@ -141,6 +115,28 @@ public class ScryfallCardsConsumer {
       consumer.close();
       log.info("Consumer closed");
     }
+  }
+
+  private static Properties createProperties() {
+    Properties props = new Properties();
+    String groupId = EnvTools.getEnvValue(
+      EnvTools.GROUP_ID_CONFIG,
+      "scryfall-cards-consumer"
+    );
+    String bootstrapServersConfig = EnvTools.getEnvValue(
+      EnvTools.BOOTSTRAP_SERVERS_CONFIG,
+      "kafka1:9092"
+    );
+    String autoOffsetResetConfig = EnvTools.getEnvValue(
+      EnvTools.AUTO_OFFSET_RESET_CONFIG,
+      "earliest"
+    );
+
+    props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+    props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServersConfig);
+    props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetResetConfig);
+
+    return props;
   }
 
   private static void ConsumeScryfallCard(String key, String value) {
