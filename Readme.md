@@ -29,11 +29,11 @@ into one JSON.
 
 # :whale: Docker
 
-First build each image, then run docker compose.
+First build each image or run docker compose.
 
-```dockerfile
+```shell
 docker build -t scryfall_cards_consumer --target scryfall_cards_consumer .
 docker build -t scryfall_tagged_cards_consumer --target scryfall_tagged_cards_consumer .
-
+#----- OR -----
 docker-compose -f docker-compose.yml up -d
 ```
