@@ -79,7 +79,7 @@
                                     <mainClass>com.github.danwiseman.kafka.consumer.scryfall.ScryfallCardsConsumer</mainClass>
                                 </transformer>
                             </transformers>
-                            <finalName>scyfall-cards-consumer-${version}</finalName>
+                            <finalName>scryfall-cards-consumer-${version}</finalName>
                         </configuration>
                     </execution>
                     <execution>
