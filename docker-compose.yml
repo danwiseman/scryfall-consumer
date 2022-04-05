@@ -4,7 +4,11 @@ services:
     image: "danwiseman/scryfall-cards-consumer:latest"
     environment:
       - BOOTSTRAP_SERVERS_CONFIG=kafka1:9092
+      - MONGODB_DATABASE=scryfall
+      - MONGODB_COLLECTION=cards
   taggedcardsconsumer:
     image: "danwiseman/scryfall-tagged-cards-consumer:latest"
     environment:
       - BOOTSTRAP_SERVERS_CONFIG=kafka1:9092
+      - MONGODB_DATABASE=scryfall
+      - MONGODB_COLLECTION=card_tags
