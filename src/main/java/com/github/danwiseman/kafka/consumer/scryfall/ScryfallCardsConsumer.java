@@ -140,13 +140,17 @@ public class ScryfallCardsConsumer {
   }
 
   private static void ConsumeScryfallCard(String key, String value) {
-    MongoDatabase database = mongoClient.getDatabase("scryfall");
-    MongoCollection<Document> documents = database.getCollection("cards");
+    MongoDatabase database = mongoClient.getDatabase(
+      EnvTools.getEnvValue(EnvTools.MONGODB_DATABASE, "scryfall")
+    );
+    MongoCollection<Document> collection = database.getCollection(
+      EnvTools.getEnvValue(EnvTools.MONGODB_COLLECTION, "cards")
+    );
 
     try {
       JSONObject cardJson = new JSONObject(value);
       cardJson.put("_id", cardJson.getString("id"));
-      InsertOneResult insertResult = documents.insertOne(
+      InsertOneResult insertResult = collection.insertOne(
         new Document().parse(cardJson.toString())
       );
       log.info("Inserted with id " + insertResult.getInsertedId());
