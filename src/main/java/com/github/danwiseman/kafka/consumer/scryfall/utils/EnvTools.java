@@ -11,6 +11,8 @@ public class EnvTools {
   public static final String MIN_BATCH_SIZE = "MIN_BATCH_SIZE";
   public static final String MONGODB_CONNECTION_STRING =
     "MONGODB_CONNECTION_STRING";
+  public static final String MONGODB_DATABASE = "MONGODB_DATABASE";
+  public static final String MONGODB_COLLECTION = "MONGODB_COLLECTION";
 
   public static String getEnvValue(String environmentKey, String defaultValue) {
     String envValue = System.getenv(environmentKey);

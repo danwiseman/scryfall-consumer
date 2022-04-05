@@ -9,6 +9,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.UpdateOptions;
 import com.mongodb.client.model.Updates;
 import com.mongodb.client.result.InsertOneResult;
 import java.io.FileInputStream;
@@ -156,14 +157,20 @@ public class ScryfallCardTagsConsumer {
     try {
       JSONObject cardTag = new JSONObject(value);
 
-      MongoDatabase database = mongoClient.getDatabase("scryfall");
-      MongoCollection<Document> collection = database.getCollection("cards");
+      MongoDatabase database = mongoClient.getDatabase(
+        EnvTools.getEnvValue(EnvTools.MONGODB_DATABASE, "scryfall")
+      );
+      MongoCollection<Document> collection = database.getCollection(
+        EnvTools.getEnvValue(EnvTools.MONGODB_COLLECTION, "card_tags")
+      );
       String tag_field = (cardTag.getString("tag_type").contains("art"))
         ? "art_tags"
         : "oracle_tags";
+      UpdateOptions options = new UpdateOptions().upsert(true);
       collection.updateOne(
         Filters.eq("_id", cardTag.getString("id")),
-        Updates.addEachToSet(tag_field, cardTag.getJSONArray("tags").toList())
+        Updates.addEachToSet(tag_field, cardTag.getJSONArray("tags").toList()),
+        options
       );
       log.info(
         "added {} to {}",
