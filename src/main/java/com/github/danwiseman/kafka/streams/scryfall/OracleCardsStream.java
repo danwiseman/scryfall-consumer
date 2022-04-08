@@ -50,7 +50,7 @@ public class OracleCardsStream {
     );
 
     KTable<String, OracleCard> oracleCardKTable = scryfallCardsInput
-      .mapValues(card -> JsonParser.parseString(card))
+      .mapValues(JsonParser::parseString)
       .map((key, value) ->
         KeyValue.pair(
           Card
