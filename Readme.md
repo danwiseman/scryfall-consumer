@@ -1,20 +1,20 @@
 # Scryfall Kafka 
 
-This project is now known as scryfall-kafka. There will be producers for pulling scryfall data from the
+This project is now known as **scryfall-kafka**. There will be producers for pulling scryfall data from the
 excellent [Scryfall API](https://scryfall.com/docs/api).
 
-# Scryfall Producers
+# Scryfall Kafka Producers
 
 :hammer: Work In Progress.
 
-# Scryfall Consumers
+# Scryfall Kafka Consumers
 
 ## Scryfall Card Consumer
 
 This is a very basic scryfall card consumer for putting cards into a MongoDB streamed from my 
-[Scryfall Kafka Connect](https://github.com/danwiseman/scryfallconnect) application. 
-It is set up to use the default settings for a MongoDB docker. Change the settings 
-for your database.
+[Scryfall Kafka Connect](https://github.com/danwiseman/scryfallconnect) application, and soon the Scyrfall 
+Kafka Producer. It is set up to use the default settings for a MongoDB docker. Change the settings for 
+your database.
 
 ## Scryfall Card Tagger Consumer
 
@@ -34,8 +34,7 @@ producer created soon.
       }
 ```
 
-This would be a good thing to use with Kafka Streams to combine similar tag_type tags 
-into one JSON.
+This could also be combined into a Kafka Streams application for fun.
 
 # Scryfall Kafka Streams
 
@@ -47,7 +46,6 @@ information.
 The JSON looks similar to below (not finalized):
 
 ```json
-
 {
   "oracle_id": "fae37e28-e137-4177-b973-fa8b4dd8f409",
   "oracle_name": "Generous Gift",
