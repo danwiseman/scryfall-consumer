@@ -5,10 +5,16 @@ excellent [Scryfall API](https://scryfall.com/docs/api).
 
 # Scryfall Kafka Producers
 
+## Scryfall Card Producer
+
 This is a very basic Kafka producer that grabs ALL of the English prints in the Scryfall API. It has 
 hard coded rate limits; but will keep going until they are all produced into the kafka topic.
 
 :hammer: soon an AVRO producer...
+
+## Scryfall Card Tagger Producer
+
+:hammer: WIP...
 
 # Scryfall Kafka Consumers
 
