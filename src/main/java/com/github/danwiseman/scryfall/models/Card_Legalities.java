@@ -1,6 +1,6 @@
 package com.github.danwiseman.scryfall.models;
 
-import static com.github.danwiseman.kafka.streams.scryfall.schemas.ScryfallSchemas.*;
+import static com.github.danwiseman.scryfall.schemas.ScryfallSchemas.*;
 
 import org.json.JSONObject;
 

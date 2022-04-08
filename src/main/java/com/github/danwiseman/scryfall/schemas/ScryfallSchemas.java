@@ -1,4 +1,4 @@
-package com.github.danwiseman.kafka.streams.scryfall.schemas;
+package com.github.danwiseman.scryfall.schemas;
 
 public class ScryfallSchemas {
 
