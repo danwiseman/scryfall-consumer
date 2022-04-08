@@ -7,6 +7,8 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.ReplaceOptions;
 import com.mongodb.client.result.InsertOneResult;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -39,7 +41,7 @@ public class ScryfallCardsConsumer {
   public static void main(String[] args) {
     Properties config = createProperties();
 
-    String topic = EnvTools.getEnvValue(EnvTools.TOPIC, "scryfall_cards");
+    String topic = EnvTools.getEnvValue(EnvTools.TOPIC, "scryfall-cards-input");
     Integer minBatchSize = Integer.parseInt(
       EnvTools.getEnvValue(EnvTools.MIN_BATCH_SIZE, "15")
     );
@@ -150,10 +152,13 @@ public class ScryfallCardsConsumer {
     try {
       JSONObject cardJson = new JSONObject(value);
       cardJson.put("_id", cardJson.getString("id"));
-      InsertOneResult insertResult = collection.insertOne(
-        new Document().parse(cardJson.toString())
+
+      ReplaceOptions options = new ReplaceOptions().upsert(true);
+      collection.replaceOne(
+        Filters.eq("_id", cardJson.getString("id")),
+        new Document().parse(cardJson.toString()),
+        options
       );
-      log.info("Inserted with id " + insertResult.getInsertedId());
     } catch (MongoException me) {
       log.error("MongoException " + me);
     }
