@@ -53,7 +53,9 @@ public class OracleCardsStream {
       .mapValues(card -> JsonParser.parseString(card))
       .map((key, value) ->
         KeyValue.pair(
-          value.getAsJsonObject().get("oracle_id").getAsString(),
+          Card
+            .fromJson(new org.json.JSONObject(value.toString()))
+            .getOracle_id(),
           OracleCard.fromScryfallCard(
             Card.fromJson(new org.json.JSONObject(value.toString()))
           )
@@ -61,7 +63,6 @@ public class OracleCardsStream {
       )
       .groupByKey(Grouped.with(Serdes.String(), CustomSerdes.OracleCard()))
       .reduce((card1, card2) -> {
-        log.info("reducing {}", card1.getOracle_name());
         card1.addCardPrintsFromList(card2.getCard_prints());
         // set the prices to the lowest and highest print costs.
         if (card1.getCheapest_price() > card2.getCheapest_price()) {
@@ -92,7 +93,7 @@ public class OracleCardsStream {
     Properties props = new Properties();
     String appIdConfig = EnvTools.getEnvValue(
       EnvTools.APPLICATION_ID_CONFIG,
-      "oracle-cards-app"
+      "oracle-cards-stream-app"
     );
     String bootstrapServersConfig = EnvTools.getEnvValue(
       EnvTools.BOOTSTRAP_SERVERS_CONFIG,
