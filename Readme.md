@@ -14,8 +14,18 @@ hard coded rate limits; but will keep going until they are all produced into the
 
 ## Scryfall Card Tagger Producer
 
-:hammer: WIP...
+This producer takes a JSON file of the Scryfall tagger tags, and produces a JSON into Kafka with the 
+card's name, the tag, it's oracle_id, and the type of tag. The JSON used is currently in the resources
+directory. 
 
+```json
+{ 
+  "name": "Divine Smite", 
+  "id": "3b06b242-caed-4c8f-b5ab-30e86061286e", 
+  "tag_type": "art", 
+  "tags": ["2-people"]
+}
+```
 # Scryfall Kafka Consumers
 
 ## Scryfall Card Consumer
@@ -31,10 +41,7 @@ your database.
 
 This application will take JSONs that have Tagger tags from Scryfall, and it will then
 update the corresponding card in the database. This works best in conjunction with the
-above scryfall card consumer.
-
-Currently, I use [NiFi](https://nifi.apache.org/) to push these JSONs into Kafka, but there will be a 
-producer created soon.
+above scryfall card consumer and the Scryfall Card Tagger Producer.
 
 ```json
      {

@@ -9,6 +9,7 @@ public class EnvTools {
     "COMPRESSION_TYPE_CONFIG";
   public static final String LINGER_MS_CONFIG = "LINGER_MS_CONFIG";
   public static final String BATCH_SIZE_CONFIG = "BATCH_SIZE_CONFIG";
+  public static final String SCRYFALL_TAGS_JSON = "SCRYFALL_TAGS_JSON";
 
   public static String getEnvValue(String environmentKey, String defaultValue) {
     String envValue = System.getenv(environmentKey);
