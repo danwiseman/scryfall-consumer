@@ -1,5 +1,7 @@
 package com.github.danwiseman.kafka.consumer.scryfall;
 
+import static com.github.danwiseman.scryfall.schemas.ScryfallSchemas.CARD_ID_FIELD;
+
 import com.github.danwiseman.kafka.consumer.scryfall.utils.EnvTools;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoException;
@@ -151,11 +153,11 @@ public class ScryfallCardsConsumer {
 
     try {
       JSONObject cardJson = new JSONObject(value);
-      cardJson.put("_id", cardJson.getString("id"));
+      cardJson.put("_id", cardJson.getString(CARD_ID_FIELD));
 
       ReplaceOptions options = new ReplaceOptions().upsert(true);
       collection.replaceOne(
-        Filters.eq("_id", cardJson.getString("id")),
+        Filters.eq("_id", cardJson.getString(CARD_ID_FIELD)),
         new Document().parse(cardJson.toString()),
         options
       );
