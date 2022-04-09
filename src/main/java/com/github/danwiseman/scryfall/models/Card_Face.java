@@ -1,6 +1,6 @@
 package com.github.danwiseman.scryfall.models;
 
-import static com.github.danwiseman.kafka.streams.scryfall.schemas.ScryfallSchemas.*;
+import static com.github.danwiseman.scryfall.schemas.ScryfallSchemas.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,8 @@ public class Card_Face {
 
   private String artist;
   private String cmc;
-  private List<Card_Color> color_indicator;
-  private List<Card_Color> colors;
+  private List<String> color_indicator;
+  private List<String> colors;
   private String flavor_text;
   private String illustration_id;
   private String layout;
@@ -36,8 +36,8 @@ public class Card_Face {
   public Card_Face(
     String artist,
     String cmc,
-    List<Card_Color> color_indicator,
-    List<Card_Color> colors,
+    List<String> color_indicator,
+    List<String> colors,
     String flavor_text,
     String illustration_id,
     String layout,
@@ -98,12 +98,10 @@ public class Card_Face {
     card_face.setArtist(jsonObject.optString(CARD_FACE_ARTIST));
     card_face.setCmc(jsonObject.optString(CARD_FACE_CMC));
     card_face.setColor_indicator(
-      Card_Color.arrayFromJson(
-        jsonObject.optJSONArray(CARD_FACE_COLOR_INDICATOR)
-      )
+      listFromJsonArray(jsonObject.optJSONArray(CARD_FACE_COLOR_INDICATOR))
     );
     card_face.setColors(
-      Card_Color.arrayFromJson(jsonObject.optJSONArray(CARD_FACE_COLORS))
+      listFromJsonArray(jsonObject.optJSONArray(CARD_FACE_COLORS))
     );
     card_face.setFlavor_text(jsonObject.optString(CARD_FACE_FLAVOR_TEXT));
     card_face.setIllustration_id(
@@ -148,19 +146,19 @@ public class Card_Face {
     this.cmc = cmc;
   }
 
-  public List<Card_Color> getColor_indicator() {
+  public List<String> getColor_indicator() {
     return color_indicator;
   }
 
-  public void setColor_indicator(List<Card_Color> color_indicator) {
+  public void setColor_indicator(List<String> color_indicator) {
     this.color_indicator = color_indicator;
   }
 
-  public List<Card_Color> getColors() {
+  public List<String> getColors() {
     return colors;
   }
 
-  public void setColors(List<Card_Color> colors) {
+  public void setColors(List<String> colors) {
     this.colors = colors;
   }
 
@@ -298,5 +296,15 @@ public class Card_Face {
 
   public void setLoyalty(String loyalty) {
     this.loyalty = loyalty;
+  }
+
+  public static List<String> listFromJsonArray(JSONArray jsonArray) {
+    List<String> arrayList = new ArrayList<String>();
+    if (jsonArray != null) {
+      for (Object value : jsonArray) {
+        arrayList.add((String) value);
+      }
+    }
+    return arrayList;
   }
 }

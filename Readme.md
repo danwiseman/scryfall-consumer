@@ -5,25 +5,44 @@ excellent [Scryfall API](https://scryfall.com/docs/api).
 
 # Scryfall Kafka Producers
 
-:hammer: Work In Progress.
+## Scryfall Card Producer
 
+This is a very basic Kafka producer that grabs ALL of the English prints in the Scryfall API. It has 
+hard coded rate limits; but will keep going until they are all produced into the kafka topic.
+
+:hammer: soon an AVRO producer...
+
+## Scryfall Card Tagger Producer
+
+This producer takes a JSON file of the [Scryfall tagger](https://tagger.scryfall.com/) tags, and produces 
+a JSON into Kafka with the card's name, the tag, and the type of tag. The ID chosen is the oracle_id if the 
+tag is an oracle tag, otherwise the tag will be the actual card's id. The JSON used is currently in the 
+resources directory. 
+
+```json
+{ 
+  "name": "Divine Smite", 
+  "id": "3b06b242-caed-4c8f-b5ab-30e86061286e", 
+  "tag_type": "art", 
+  "tags": ["2-people"]
+}
+```
 # Scryfall Kafka Consumers
 
 ## Scryfall Card Consumer
 
 This is a very basic scryfall card consumer for putting cards into a MongoDB streamed from my 
-[Scryfall Kafka Connect](https://github.com/danwiseman/scryfallconnect) application, and soon the Scyrfall 
+[Scryfall Kafka Connect](https://github.com/danwiseman/scryfallconnect) application or the above Scyrfall 
 Kafka Producer. It is set up to use the default settings for a MongoDB docker. Change the settings for 
 your database.
+
+:hammer: soon an AVRO consumer...
 
 ## Scryfall Card Tagger Consumer
 
 This application will take JSONs that have Tagger tags from Scryfall, and it will then
 update the corresponding card in the database. This works best in conjunction with the
-above scryfall card consumer.
-
-Currently, I use [NiFi](https://nifi.apache.org/) to push these JSONs into Kafka, but there will be a 
-producer created soon.
+above scryfall card consumer and the Scryfall Card Tagger Producer.
 
 ```json
      {

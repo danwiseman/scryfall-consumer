@@ -1,4 +1,4 @@
-package com.github.danwiseman.kafka.streams.scryfall.utils;
+package com.github.danwiseman.scryfall.utils;
 
 import java.time.Instant;
 import java.time.ZoneId;

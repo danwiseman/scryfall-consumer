@@ -1,8 +1,8 @@
 package com.github.danwiseman.scryfall.models;
 
-import static com.github.danwiseman.kafka.streams.scryfall.schemas.ScryfallSchemas.*;
+import static com.github.danwiseman.scryfall.schemas.ScryfallSchemas.*;
 
-import com.github.danwiseman.kafka.streams.scryfall.utils.DateUtils;
+import com.github.danwiseman.scryfall.utils.DateUtils;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
