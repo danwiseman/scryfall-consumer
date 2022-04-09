@@ -124,6 +124,66 @@
                             <finalName>scryfall-cards-tags-consumer-${version}</finalName>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>build-third</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.github.danwiseman.kafka.producer.scryfall.ScryfallCardsProducer</mainClass>
+                                </transformer>
+                            </transformers>
+                            <finalName>scryfall-cards-producer-${version}</finalName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-fourth</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.github.danwiseman.kafka.producer.scryfall.ScryfallCardTagsProducer</mainClass>
+                                </transformer>
+                            </transformers>
+                            <finalName>scryfall-cards-tags-producer-${version}</finalName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-fifth</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.github.danwiseman.kafka.consumer.scryfall.ScryfallOracleCardsConsumer</mainClass>
+                                </transformer>
+                            </transformers>
+                            <finalName>scryfall-oracle-cards-consumer-${version}</finalName>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build-sixth</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.github.danwiseman.kafka.streams.scryfall.OracleCardsStream</mainClass>
+                                </transformer>
+                            </transformers>
+                            <finalName>scryfall-oracle-cards-streamer-${version}</finalName>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
