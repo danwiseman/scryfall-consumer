@@ -23,8 +23,7 @@ public class OracleCard {
   private Card_Legalities legalities;
   private List<String> card_prints;
   private Card_Image_Uris card_images;
-
-  public OracleCard() {}
+  private List<Card_Face> card_faces;
 
   public OracleCard(
     String oracle_id,
@@ -43,7 +42,8 @@ public class OracleCard {
     String type_line,
     Card_Legalities legalities,
     List<String> card_prints,
-    Card_Image_Uris card_images
+    Card_Image_Uris card_images,
+    List<Card_Face> card_faces
   ) {
     this.oracle_id = oracle_id;
     this.oracle_name = oracle_name;
@@ -62,7 +62,10 @@ public class OracleCard {
     this.legalities = legalities;
     this.card_prints = card_prints;
     this.card_images = card_images;
+    this.card_faces = card_faces;
   }
+
+  public OracleCard() {}
 
   public static OracleCard fromScryfallCard(Card card) {
     OracleCard oracleCard = new OracleCard();
@@ -96,22 +99,14 @@ public class OracleCard {
     cardprints.add(card.getId());
     oracleCard.setCard_prints(cardprints);
 
-    if (card.getCard_faces().size() >= 1) {
-      // Pull from Card Face 0
-      oracleCard.setPower(card.getCard_faces().get(0).getPower());
-      oracleCard.setToughness(card.getCard_faces().get(0).getToughness());
-      oracleCard.setCmc(card.getCard_faces().get(0).getCmc());
-      oracleCard.setMana_cost(card.getCard_faces().get(0).getPower());
-      oracleCard.setOracle_text(card.getCard_faces().get(0).getPower());
-      oracleCard.setCard_images(card.getCard_faces().get(0).getImage_uris());
-    } else {
-      oracleCard.setPower(card.getPower());
-      oracleCard.setToughness(card.getToughness());
-      oracleCard.setCmc(card.getCmc());
-      oracleCard.setMana_cost(card.getPower());
-      oracleCard.setOracle_text(card.getPower());
-      oracleCard.setCard_images(card.getImage_uris());
-    }
+    oracleCard.setPower(card.getPower());
+    oracleCard.setToughness(card.getToughness());
+    oracleCard.setCmc(card.getCmc());
+    oracleCard.setMana_cost(card.getPower());
+    oracleCard.setOracle_text(card.getPower());
+    oracleCard.setCard_images(card.getImage_uris());
+
+    oracleCard.setCard_faces(card.getCard_faces());
 
     return oracleCard;
   }
@@ -264,5 +259,13 @@ public class OracleCard {
 
   public void setCard_images(Card_Image_Uris card_images) {
     this.card_images = card_images;
+  }
+
+  public List<Card_Face> getCard_faces() {
+    return card_faces;
+  }
+
+  public void setCard_faces(List<Card_Face> card_faces) {
+    this.card_faces = card_faces;
   }
 }
