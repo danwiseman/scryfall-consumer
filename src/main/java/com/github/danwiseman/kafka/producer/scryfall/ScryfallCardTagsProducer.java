@@ -93,10 +93,13 @@ public class ScryfallCardTagsProducer {
             //            "tag_type": "art",
             //            "tags": ["2-people"]
             //    }
+            String tagId = (tagType == "art")
+              ? card.getId()
+              : card.getOracle_id();
             String taggedCard = String.format(
               "{ \"name\": \"%s\", \"id\": \"%s\", \"tag_type\": \"%s\", \"tags\": [\"%s\"] }",
               card.getName(),
-              card.getOracle_id(),
+              tagId,
               tagType,
               tagName
             );

@@ -14,9 +14,10 @@ hard coded rate limits; but will keep going until they are all produced into the
 
 ## Scryfall Card Tagger Producer
 
-This producer takes a JSON file of the Scryfall tagger tags, and produces a JSON into Kafka with the 
-card's name, the tag, it's oracle_id, and the type of tag. The JSON used is currently in the resources
-directory. 
+This producer takes a JSON file of the [Scryfall tagger](https://tagger.scryfall.com/) tags, and produces 
+a JSON into Kafka with the card's name, the tag, and the type of tag. The ID chosen is the oracle_id if the 
+tag is an oracle tag, otherwise the tag will be the actual card's id. The JSON used is currently in the 
+resources directory. 
 
 ```json
 { 
