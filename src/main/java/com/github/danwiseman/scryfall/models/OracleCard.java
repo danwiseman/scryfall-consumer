@@ -102,8 +102,8 @@ public class OracleCard {
     oracleCard.setPower(card.getPower());
     oracleCard.setToughness(card.getToughness());
     oracleCard.setCmc(card.getCmc());
-    oracleCard.setMana_cost(card.getPower());
-    oracleCard.setOracle_text(card.getPower());
+    oracleCard.setMana_cost(card.getMana_cost());
+    oracleCard.setOracle_text(card.getOracle_text());
     oracleCard.setCard_images(card.getImage_uris());
 
     oracleCard.setCard_faces(card.getCard_faces());
